@@ -120,36 +120,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 在成功解析到 accountId 后获取 UUID
         if (result.accountId !== '-') {
-            fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            throw new Error('player-not-found');
-                        }
-                        throw new Error('network-error');
+            // 添加超时和错误处理
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
+        
+            fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`, {
+                method: 'GET',
+                mode: 'cors',
+                signal: controller.signal
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('player-not-found');
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    const uuidElement = document.getElementById('accountUuid');
-                    if (uuidElement) {
-                        uuidElement.textContent = data.id;
-                        uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                    throw new Error('network-error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const uuidElement = document.getElementById('accountUuid');
+                if (uuidElement) {
+                    uuidElement.textContent = data.id;
+                    uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                }
+            })
+            .catch(error => {
+                const uuidElement = document.getElementById('accountUuid');
+                if (uuidElement) {
+                    uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                    if (error.name === 'AbortError') {
+                        uuidElement.textContent = '请求超时';
+                        uuidElement.classList.add('uuid-error');
+                    } else if (error.message === 'player-not-found') {
+                        uuidElement.textContent = '玩家不存在';
+                        uuidElement.classList.add('uuid-not-found');
+                    } else {
+                        uuidElement.textContent = '网络错误';
+                        uuidElement.classList.add('uuid-error');
                     }
-                })
-                .catch(error => {
-                    const uuidElement = document.getElementById('accountUuid');
-                    if (uuidElement) {
-                        uuidElement.classList.remove('uuid-error', 'uuid-not-found');
-                        if (error.message === 'player-not-found') {
-                            uuidElement.textContent = '玩家不存在';
-                            uuidElement.classList.add('uuid-not-found');
-                        } else {
-                            uuidElement.textContent = '网络错误';
-                            uuidElement.classList.add('uuid-error');
-                        }
-                    }
-                });
+                }
+            });
         }
 
         return result;
