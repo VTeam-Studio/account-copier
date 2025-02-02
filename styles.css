@@ -230,3 +230,97 @@ h2 {
         margin-top: 0.25rem;
     }
 }
+.github-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background-color: #edf2f7;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.github-link:hover {
+    background-color: #e2e8f0;
+    color: #2d3748;
+}
+
+.github-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.commit-id {
+    padding: 0.5rem 1rem;
+    background-color: #edf2f7;
+    border-radius: 6px;
+    font-family: monospace;
+}
+
+.copy-all {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #edf2f7;
+    font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 1rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .label {
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* 动画效果 */
+.result-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.copy-btn.copied {
+    background-color: #48bb78;
+    color: white;
+}
+.note {
+    font-size: 0.75rem;
+    color: #718096;
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .note {
+        display: block;
+        margin-left: 0;
+        margin-top: 0.25rem;
+    }
+}

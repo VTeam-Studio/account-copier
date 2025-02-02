@@ -222,4 +222,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 初始化复制按钮
     setupCopyButtons();
+    // 获取最新的 commit ID
+    fetch('https://api.github.com/repos/Michaelwucoc/account-copier/commits/main')
+        .then(response => response.json())
+        .then(data => {
+            const commitId = document.getElementById('commitId');
+            commitId.textContent = data.sha.substring(0, 7); // 显示前7位
+        })
+        .catch(error => {
+            const commitId = document.getElementById('commitId');
+            commitId.textContent = 'unavailable';
+        });
 });
