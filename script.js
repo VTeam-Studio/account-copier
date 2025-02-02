@@ -125,7 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
             fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`, {
                 method: 'GET',
-                mode: 'no-cors', // 修改为 no-cors 模式
+                headers: {
+                    'Accept': 'application/json'
+                },
                 signal: controller.signal
             })
             .then(response => {
@@ -140,9 +142,11 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 const uuidElement = document.getElementById('accountUuid');
-                if (uuidElement) {
+                if (uuidElement && data && data.id) {
                     uuidElement.textContent = data.id;
                     uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                } else {
+                    throw new Error('invalid-data');
                 }
             })
             .catch(error => {
@@ -155,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (error.message === 'player-not-found') {
                         uuidElement.textContent = '玩家不存在';
                         uuidElement.classList.add('uuid-not-found');
+                    } else if (error.message === 'invalid-data') {
+                        uuidElement.textContent = '数据无效';
+                        uuidElement.classList.add('uuid-error');
                     } else {
                         uuidElement.textContent = '网络错误';
                         uuidElement.classList.add('uuid-error');
