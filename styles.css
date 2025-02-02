@@ -1,0 +1,232 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.input-section {
+    margin-bottom: 2rem;
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* 移除解析按钮相关样式 */
+.parse-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.parse-btn:hover {
+    background-color: #3182ce;
+}
+
+.result-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.main-info, .account-info, .extra-info {
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.copy-single {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 640px) {
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .copy-single {
+        margin-top: 0.5rem;
+        align-self: flex-start;
+    }
+}
+
+.label {
+    min-width: 150px;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.value {
+    color: #2d3748;
+    font-weight: 400;
+}
+
+/* 添加封禁状态的颜色样式 */
+.ban-status-unban {
+    color: #48bb78 !important;  /* 绿色 */
+    font-weight: 600;
+}
+
+.ban-status-banned {
+    color: #e53e3e !important;  /* 红色 */
+    font-weight: 600;
+}
+
+.ban-status-nobc {
+    color: #4299e1 !important;  /* 蓝色 */
+    font-weight: 600;
+}
+
+.ban-status-note {
+    font-size: 0.75rem;
+    color: #48bb78;  /* 绿色 */
+    margin-left: 0.5rem;
+    font-style: italic;
+}
+
+@media (max-width: 640px) {
+    .ban-status-note {
+        display: block;
+        margin-left: 0;
+        margin-top: 0.25rem;
+    }
+}
+
+.highlight .value {
+    color: #4299e1;
+    font-weight: 500;
+}
+
+.copy-btn {
+    padding: 0.5rem 1rem;
+    background-color: #edf2f7;
+    border: none;
+    border-radius: 6px;
+    color: #4a5568;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-btn:hover {
+    background-color: #e2e8f0;
+    color: #2d3748;
+}
+
+.copy-all {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #edf2f7;
+    font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 1rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .label {
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* 动画效果 */
+.result-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.copy-btn.copied {
+    background-color: #48bb78;
+    color: white;
+}
+.note {
+    font-size: 0.75rem;
+    color: #718096;
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .note {
+        display: block;
+        margin-left: 0;
+        margin-top: 0.25rem;
+    }
+}

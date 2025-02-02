@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏账号卡密解析器 - By Milk</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>游戏账号卡密解析器 - By Milk</h1>
+        <div class="input-section">
+            <textarea id="cardInput" placeholder="请在此处粘贴您的卡密内容..."></textarea>
+            <!-- 移除解析按钮 -->
+        </div>
+        <div class="result-section" id="resultSection">
+            <div class="result-card">
+                <div class="main-info">
+                    <h2>主要信息 <button class="copy-btn" data-section="main">复制</button></h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">卡密类型:</span>
+                            <span class="value" id="cardType">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">游戏类型:</span>
+                            <span class="value" id="gameType">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">账号类型:</span>
+                            <span class="value" id="accountType">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Hypixel封禁情况:</span>
+                            <span class="value" id="banStatus">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">封禁剩余时间[如有]:</span>
+                            <span class="value" id="banTime">-</span>
+                            <span class="note">（注：此数据仅供参考，不代表实际封禁时间）</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Hypixel大厅等级:</span>
+                            <span class="value" id="lobbyLevel">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="account-info">
+                    <h2>账号信息 <button class="copy-btn" data-section="account">复制</button></h2>
+                    <div class="info-grid highlight">
+                        <div class="info-item">
+                            <span class="label">游戏账号:</span>
+                            <span class="value" id="gameAccount">-</span>
+                            <button class="copy-btn copy-single" data-copy="gameAccount">复制账号</button>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">账号密码:</span>
+                            <span class="value" id="accountPassword">-</span>
+                            <button class="copy-btn copy-single" data-copy="accountPassword">复制密码</button>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">账号ID:</span>
+                            <span class="value" id="accountId">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="extra-info">
+                    <h2>其他信息 <button class="copy-btn" data-section="extra">复制</button></h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Bedwars等级:</span>
+                            <span class="value" id="bedwarsLevel">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">街机硬币:</span>
+                            <span class="value" id="arcadeCoins">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">战墙硬币:</span>
+                            <span class="value" id="mwCoins">-</span>
+                        </div>
+                        <!-- 添加 SkyBlock 硬币显示 -->
+                        <div class="info-item">
+                            <span class="label">SkyBlock硬币:</span>
+                            <span class="value" id="sbCoins">-</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="copy-btn copy-all" data-section="all">复制全部信息</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
