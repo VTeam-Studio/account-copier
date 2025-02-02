@@ -120,13 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 在成功解析到 accountId 后获取 UUID
         if (result.accountId !== '-') {
-            // 添加超时和错误处理
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
         
             fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`, {
                 method: 'GET',
-                mode: 'cors',
+                mode: 'no-cors', // 修改为 no-cors 模式
                 signal: controller.signal
             })
             .then(response => {
