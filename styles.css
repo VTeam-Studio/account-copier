@@ -247,26 +247,37 @@ h2 {
     color: #4a5568;
     text-decoration: none;
     padding: 0.5rem 1rem;
-    background-color: #edf2f7;
-    border-radius: 6px;
+    background-color: rgba(237, 242, 247, 0.9);
+    border-radius: 20px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .github-link:hover {
-    background-color: #e2e8f0;
-    color: #2d3748;
+    background-color: rgba(226, 232, 240, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .github-icon {
-    display: inline-block;
-    vertical-align: middle;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.github-link:hover .github-icon {
+    opacity: 1;
 }
 
 .commit-id {
-    padding: 0.5rem 1rem;
-    background-color: #edf2f7;
-    border-radius: 6px;
+    font-size: 0.75rem;
     font-family: monospace;
+    color: #718096;
+    margin-left: 0.25rem;
+}
+
+/* 添加底部间距，防止内容被遮挡 */
+body {
+    padding-bottom: 4rem;
 }
 
 .copy-all {
