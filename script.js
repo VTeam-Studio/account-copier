@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`https://api.milkawa.xyz/api/minecraft/uuid/${result.accountId}`, {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 signal: controller.signal
             })
@@ -139,7 +140,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!response.ok) {
                     throw new Error('network-error');
                 }
-                return response.json();
+                const text = await response.text();
+                if (!text) {
+                    throw new Error('player-not-found');
+                }
+                return JSON.parse(text);
             })
             .then(data => {
                 const uuidElement = document.getElementById('accountUuid');
