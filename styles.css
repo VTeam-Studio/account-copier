@@ -250,7 +250,6 @@ h2 {
     background-color: rgba(237, 242, 247, 0.9);
     border-radius: 20px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .github-link:hover {
@@ -370,4 +369,14 @@ body {
     font-size: 0.75rem;
     font-family: monospace;
     color: #718096;
+    /* UUID 错误状态样式 */
+    .uuid-error {
+        color: #e53e3e !important;  /* 红色 */
+        font-weight: 500;
+    }
+
+    .uuid-not-found {
+        color: #e53e3e !important;  /* 红色 */
+        font-style: italic;
+    }
 }

@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameAccount: '-',
                 accountPassword: '-',
                 accountId: '-',
+                accountUuid: '-',  // 添加 UUID 字段
                 bedwarsLevel: '-',
                 arcadeCoins: '-',
                 mwCoins: '-',
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 解析卡密内容
+    // 在 parseCardContent 函数中添加 UUID 字段
     function parseCardContent(content) {
         const result = {
             cardType: '-',
@@ -116,6 +118,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const sbMatch = content.match(/SB_Coins:(\d+)/);
         if (sbMatch) result.sbCoins = sbMatch[1];
 
+        // 在成功解析到 accountId 后获取 UUID
+        if (result.accountId !== '-') {
+            fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('player-not-found');
+                        }
+                        throw new Error('network-error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const uuidElement = document.getElementById('accountUuid');
+                    if (uuidElement) {
+                        uuidElement.textContent = data.id;
+                        uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                    }
+                })
+                .catch(error => {
+                    const uuidElement = document.getElementById('accountUuid');
+                    if (uuidElement) {
+                        uuidElement.classList.remove('uuid-error', 'uuid-not-found');
+                        if (error.message === 'player-not-found') {
+                            uuidElement.textContent = '玩家不存在';
+                            uuidElement.classList.add('uuid-not-found');
+                        } else {
+                            uuidElement.textContent = '网络错误';
+                            uuidElement.classList.add('uuid-error');
+                        }
+                    }
+                });
+        }
+
         return result;
     }
 
@@ -182,7 +218,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         case 'account':
                             textToCopy = `游戏账号: ${document.getElementById('gameAccount').textContent}\n` +
                                        `账号密码: ${document.getElementById('accountPassword').textContent}\n` +
-                                       `账号ID: ${document.getElementById('accountId').textContent}`;
+                                       `账号ID: ${document.getElementById('accountId').textContent}\n` +
+                                       `UUID: ${document.getElementById('accountUuid').textContent}`;
                             break;
                         case 'extra':
                             textToCopy = `Bedwars等级: ${document.getElementById('bedwarsLevel').textContent}\n` +
@@ -199,7 +236,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                        `Hypixel大厅等级: ${document.getElementById('lobbyLevel').textContent}\n\n` +
                                        `游戏账号: ${document.getElementById('gameAccount').textContent}\n` +
                                        `账号密码: ${document.getElementById('accountPassword').textContent}\n` +
-                                       `账号ID: ${document.getElementById('accountId').textContent}\n\n` +
+                                       `账号ID: ${document.getElementById('accountId').textContent}\n` +
+                                       `UUID: ${document.getElementById('accountUuid').textContent}\n\n` +
                                        `Bedwars等级: ${document.getElementById('bedwarsLevel').textContent}\n` +
                                        `街机硬币: ${document.getElementById('arcadeCoins').textContent}\n` +
                                        `战墙硬币: ${document.getElementById('mwCoins').textContent}\n` +
