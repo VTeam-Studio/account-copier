@@ -123,19 +123,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
         
-            fetch(`https://api.mojang.com/users/profiles/minecraft/${result.accountId}`, {
+            // 使用自己的代理服务器
+            fetch(`https://api.milkawa.xyz/api/minecraft/uuid/${result.accountId}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
                 },
                 signal: controller.signal
             })
-            .then(response => {
+            .then(async response => {
                 clearTimeout(timeoutId);
+                if (response.status === 404) {
+                    throw new Error('player-not-found');
+                }
                 if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('player-not-found');
-                    }
                     throw new Error('network-error');
                 }
                 return response.json();
@@ -155,17 +156,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     uuidElement.classList.remove('uuid-error', 'uuid-not-found');
                     if (error.name === 'AbortError') {
                         uuidElement.textContent = '请求超时';
-                        uuidElement.classList.add('uuid-error');
                     } else if (error.message === 'player-not-found') {
                         uuidElement.textContent = '玩家不存在';
                         uuidElement.classList.add('uuid-not-found');
                     } else if (error.message === 'invalid-data') {
                         uuidElement.textContent = '数据无效';
-                        uuidElement.classList.add('uuid-error');
                     } else {
+                        console.error('UUID 获取错误:', error);
                         uuidElement.textContent = '网络错误';
-                        uuidElement.classList.add('uuid-error');
                     }
+                    uuidElement.classList.add('uuid-error');
                 }
             });
         }
