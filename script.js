@@ -227,10 +227,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             const commitId = document.getElementById('commitId');
-            commitId.textContent = data.sha.substring(0, 7); // 显示前7位
+            commitId.textContent = data.sha.substring(0, 6); // 只显示前6位
         })
         .catch(error => {
             const commitId = document.getElementById('commitId');
-            commitId.textContent = 'unavailable';
+            commitId.textContent = ''; // 出错时不显示
         });
 });
