@@ -1,7 +1,6 @@
-import express from 'express';
-import cors from 'cors';
-import fetch from 'node-fetch';
-
+const express = require('express');
+const cors = require('cors');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const app = express();
 
 // 配置 CORS，只允许特定域名访问
