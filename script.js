@@ -46,16 +46,30 @@ document.addEventListener('DOMContentLoaded', function() {
             bedwarsLevel: '-',
             arcadeCoins: '-',
             mwCoins: '-',
-            sbCoins: '-'  // 添加 SkyBlock 硬币字段
+            sbCoins: '-'
         };
-
+    
         // 解析主要信息
         if (content.includes('[Microsoft_Hit]')) result.cardType = '微软账户';
         if (content.includes('[MC]')) result.gameType = 'Minecraft';
         if (content.includes('[XGP]')) result.accountType = 'XGP';
         if (content.includes('[MineCon]')) result.accountType = '含有MineCon披风';
         if (content.includes('[SkyBlock]')) result.accountType = 'SkyBlock';
-        
+    
+        // 添加 NoMcname 和 SetName 处理
+        if (content.includes('[NoMcname]')) {
+            result.accountId = 'XGP未设置游戏ID';
+        } else {
+            const setNameMatch = content.match(/SetName:([^\s|]+)/);
+            if (setNameMatch && content.includes('[XGP]')) {
+                result.accountId = setNameMatch[1] + ' (XGP已设置ID)';
+            } else {
+                // 原有的 Name: 格式处理
+                const nameMatch = content.match(/Name:([^\s]+)/);
+                if (nameMatch) result.accountId = nameMatch[1];
+            }
+        }
+    
         // 修改封禁状态判断
         if (content.includes('[unban]')) {
             result.banStatus = 'Unban';
@@ -75,12 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
             result.banTime = '-';
             result.banStatusNote = '(当然大部分应该是Unban的)';
         }
-
+    
         
         // 解析等级信息
         const levelMatch = content.match(/\[(\d+)\]/);
         if (levelMatch) result.lobbyLevel = levelMatch[1];
-
+    
         // 解析账号信息 - 修改这部分以支持新格式
         const accountMatch = content.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+):([^:|]+)(?::([^|\s]+))?/);
         if (accountMatch) {
@@ -99,25 +113,25 @@ document.addEventListener('DOMContentLoaded', function() {
             const nameMatch = content.match(/Name:([^\s]+)/);
             if (nameMatch) result.accountId = nameMatch[1];
         }
-
+    
         // 解析ID
         const nameMatch = content.match(/Name:([^\s]+)/);
         if (nameMatch) result.accountId = nameMatch[1];
-
+    
         // 解析其他信息
         const bwMatch = content.match(/BW:(\d+)/);
         if (bwMatch) result.bedwarsLevel = bwMatch[1];
-
+    
         const arcadeMatch = content.match(/Arcade:(\d+)/);
         if (arcadeMatch) result.arcadeCoins = arcadeMatch[1];
-
+    
         const mwMatch = content.match(/MW_Coins:(\d+)/);
         if (mwMatch) result.mwCoins = mwMatch[1];
-
+    
         // 添加 SkyBlock 硬币解析
         const sbMatch = content.match(/SB_Coins:(\d+)/);
         if (sbMatch) result.sbCoins = sbMatch[1];
-
+    
         // 在成功解析到 accountId 后获取 UUID
         if (result.accountId !== '-') {
             const controller = new AbortController();
