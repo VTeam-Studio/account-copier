@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 accountPassword: '-',
                 accountId: '-',
                 accountUuid: '-',  // 添加 UUID 字段
+                accessToken: '-',  // 添加 AccessToken 字段
                 bedwarsLevel: '-',
                 arcadeCoins: '-',
                 mwCoins: '-',
@@ -43,13 +44,94 @@ document.addEventListener('DOMContentLoaded', function() {
             gameAccount: '-',
             accountPassword: '-',
             accountId: '-',
+            accountUuid: '-',
+            accessToken: '-',
             bedwarsLevel: '-',
             arcadeCoins: '-',
             mwCoins: '-',
             sbCoins: '-'
         };
     
-        // 解析主要信息
+        // 检查是否为Token卡格式
+        const isTokenCard = content.includes('Minecraft_Name:') && content.includes('Minecraft_UUID:') && content.includes('Accesstoken:');
+        
+        if (isTokenCard) {
+            // Token卡格式解析
+            result.cardType = 'Token卡';
+            result.gameType = 'Minecraft';
+            
+            // 解析Minecraft_Name
+            const minecraftNameMatch = content.match(/Minecraft_Name:([^\s\n]+)/);
+            if (minecraftNameMatch) {
+                result.accountId = minecraftNameMatch[1];
+            }
+            
+            // 解析Minecraft_UUID
+            const minecraftUuidMatch = content.match(/Minecraft_UUID:([^\s\n]+)/);
+            if (minecraftUuidMatch) {
+                result.accountUuid = minecraftUuidMatch[1];
+            }
+            
+            // 解析AccessToken
+            const accessTokenMatch = content.match(/Accesstoken:([^\s\n]+)/);
+            if (accessTokenMatch) {
+                // 如果Token包含管道符分隔的额外信息，只取第一部分
+                const fullToken = accessTokenMatch[1];
+                const tokenParts = fullToken.split('|');
+                result.accessToken = tokenParts[0]; // 只取第一部分作为AccessToken
+            }
+            
+            // 解析原版卡密信息（如果存在）
+            if (content.includes('[Microsoft_Hit]')) {
+                result.accountType = '微软账户';
+            }
+            if (content.includes('[XGP]')) {
+                result.accountType = 'XGP';
+            }
+            if (content.includes('[Banned]')) {
+                result.banStatus = 'Banned';
+                // 解析封禁时间
+                const banTimeMatch = content.match(/BanTime:(\d+)d\s*(\d+)h\s*(\d+)m\s*(\d+)s/);
+                if (banTimeMatch) {
+                    const [_, days, hours, minutes, seconds] = banTimeMatch;
+                    result.banTime = `${days}天 ${hours}小时 ${minutes}分 ${seconds}秒`;
+                }
+            } else if (content.includes('[unban]')) {
+                result.banStatus = 'Unban';
+                result.banTime = '-';
+            } else {
+                result.banStatus = '未检查封禁状态';
+                result.banTime = '-';
+            }
+            
+            // 解析等级信息
+            const levelMatch = content.match(/\[(\d+)\]/);
+            if (levelMatch) result.lobbyLevel = levelMatch[1];
+            
+            // 解析账号信息
+            const accountMatch = content.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+):([^:|]+)(?::([^|\s]+))?/);
+            if (accountMatch) {
+                result.gameAccount = accountMatch[1];
+                result.accountPassword = accountMatch[2];
+            }
+            
+            // 解析其他信息
+            const bwMatch = content.match(/BW:(\d+)/);
+            if (bwMatch) result.bedwarsLevel = bwMatch[1];
+            
+            const arcadeMatch = content.match(/Arcade:(\d+)/);
+            if (arcadeMatch) result.arcadeCoins = arcadeMatch[1];
+            
+            const mwMatch = content.match(/MW_Coins:(\d+)/);
+            if (mwMatch) result.mwCoins = mwMatch[1];
+            
+            const sbMatch = content.match(/SB_Coins:(\d+)/);
+            if (sbMatch) result.sbCoins = sbMatch[1];
+            
+            // 不直接返回，让后续的updateDisplay函数处理省略逻辑
+        }
+        
+        // 原版卡密格式解析
         if (content.includes('[Microsoft_Hit]')) result.cardType = '微软账户';
         if (content.includes('[MC]')) result.gameType = 'Minecraft';
         if (content.includes('[XGP]')) result.accountType = 'XGP';
@@ -217,6 +299,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             element.parentElement.appendChild(noteSpan);
                         }
                     }
+                } else if (key === 'accessToken') {
+                    // 特殊处理AccessToken显示
+                    if (value && value !== '-' && value.length > 50) {
+                        // 显示前20个字符 + ... + 后20个字符
+                        const displayValue = value.substring(0, 20) + '...' + value.substring(value.length - 20);
+                        element.textContent = displayValue;
+                        element.title = value; // 悬停显示完整内容
+                        element.style.cursor = 'help';
+                    } else {
+                        element.textContent = value;
+                        element.title = '';
+                        element.style.cursor = 'default';
+                    }
                 } else {
                     element.textContent = value;
                 }
@@ -235,7 +330,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (singleCopy) {
                     // 复制单个值
-                    textToCopy = document.getElementById(singleCopy).textContent;
+                    if (singleCopy === 'accessToken') {
+                        // 对于AccessToken，复制完整内容而不是显示用的省略版本
+                        textToCopy = document.getElementById(singleCopy).title || document.getElementById(singleCopy).textContent;
+                    } else {
+                        textToCopy = document.getElementById(singleCopy).textContent;
+                    }
                 } else {
                     // 原有的复制逻辑
                     switch(section) {
@@ -251,7 +351,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             textToCopy = `游戏账号: ${document.getElementById('gameAccount').textContent}\n` +
                                        `账号密码: ${document.getElementById('accountPassword').textContent}\n` +
                                        `账号ID: ${document.getElementById('accountId').textContent}\n` +
-                                       `UUID: ${document.getElementById('accountUuid').textContent}`;
+                                       `UUID: ${document.getElementById('accountUuid').textContent}\n` +
+                                       `AccessToken: ${document.getElementById('accessToken').title || document.getElementById('accessToken').textContent}`;
                             break;
                         case 'extra':
                             textToCopy = `Bedwars等级: ${document.getElementById('bedwarsLevel').textContent}\n` +
@@ -269,7 +370,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                        `游戏账号: ${document.getElementById('gameAccount').textContent}\n` +
                                        `账号密码: ${document.getElementById('accountPassword').textContent}\n` +
                                        `账号ID: ${document.getElementById('accountId').textContent}\n` +
-                                       `UUID: ${document.getElementById('accountUuid').textContent}\n\n` +
+                                       `UUID: ${document.getElementById('accountUuid').textContent}\n` +
+                                       `AccessToken: ${document.getElementById('accessToken').title || document.getElementById('accessToken').textContent}\n\n` +
                                        `Bedwars等级: ${document.getElementById('bedwarsLevel').textContent}\n` +
                                        `街机硬币: ${document.getElementById('arcadeCoins').textContent}\n` +
                                        `战墙硬币: ${document.getElementById('mwCoins').textContent}\n` +
@@ -283,7 +385,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.textContent = '已复制';
                     setTimeout(() => {
                         button.classList.remove('copied');
-                        button.textContent = singleCopy ? (singleCopy === 'gameAccount' ? '复制账号' : '复制密码') : '复制';
+                        if (singleCopy) {
+                            switch(singleCopy) {
+                                case 'gameAccount':
+                                    button.textContent = '复制账号';
+                                    break;
+                                case 'accountPassword':
+                                    button.textContent = '复制密码';
+                                    break;
+                                case 'accessToken':
+                                    button.textContent = '复制Token';
+                                    break;
+                                default:
+                                    button.textContent = '复制';
+                            }
+                        } else {
+                            button.textContent = '复制';
+                        }
                     }, 2000);
                 });
             });

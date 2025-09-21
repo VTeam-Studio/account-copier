@@ -369,14 +369,45 @@ body {
     font-size: 0.75rem;
     font-family: monospace;
     color: #718096;
-    /* UUID 错误状态样式 */
-    .uuid-error {
-        color: #e53e3e !important;  /* 红色 */
-        font-weight: 500;
-    }
+}
 
-    .uuid-not-found {
-        color: #e53e3e !important;  /* 红色 */
-        font-style: italic;
-    }
+/* UUID 错误状态样式 */
+.uuid-error {
+    color: #e53e3e !important;  /* 红色 */
+    font-weight: 500;
+}
+
+.uuid-not-found {
+    color: #e53e3e !important;  /* 红色 */
+    font-style: italic;
+}
+
+/* AccessToken 省略显示样式 */
+#accessToken {
+    font-family: monospace;
+    font-size: 0.875rem;
+    word-break: break-all;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#accessToken[title] {
+    position: relative;
+}
+
+#accessToken[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background-color: #2d3748;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-width: 300px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
